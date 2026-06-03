@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Floating background -->
+    <div class="bg-shapes" id="bgShapes" aria-hidden="true"></div>
+
+    <!-- Sound toggle -->
+    <button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
+        <i class="fas fa-volume-high"></i>
+    </button>
+
+    <!-- Toast -->
+    <div class="toast-msg" id="toast" aria-live="polite"></div>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="heroSection" role="main">
+        <!-- Decorative floating emojis -->
+        <span class="deco" style="top:8%;left:10%;--dur:6s;animation-delay:-1s;">🐶</span>
+        <span class="deco" style="top:15%;right:12%;--dur:8s;animation-delay:-3s;">🌈</span>
+        <span class="deco" style="bottom:20%;left:8%;--dur:7s;animation-delay:-2s;">🚀</span>
+        <span class="deco" style="bottom:12%;right:10%;--dur:9s;animation-delay:-4s;">🎈</span>
+        <span class="deco" style="top:40%;left:5%;--dur:6.5s;animation-delay:-0.5s;">⭐</span>
+        <span class="deco" style="top:55%;right:6%;--dur:7.5s;animation-delay:-2.5s;">🎨</span>
+
+        <h1 class="hero-title">Memory Match</h1>
+        <p class="hero-sub">Flip cards, find pairs, and train your brain</p>
+
+        <div class="diff-cards" role="radiogroup" aria-label="Select difficulty">
+            <button class="diff-card diff-easy selected" data-diff="easy" role="radio" aria-checked="true" tabindex="0">
+                <span class="diff-label">Easy</span>
+                <span class="diff-desc">4 x 3 Grid</span>
+            </button>
+            <button class="diff-card diff-medium" data-diff="medium" role="radio" aria-checked="false" tabindex="0">
+                <span class="diff-label">Medium</span>
+                <span class="diff-desc">4 x 4 Grid</span>
+            </button>
+            <button class="diff-card diff-hard" data-diff="hard" role="radio" aria-checked="false" tabindex="0">
+                <span class="diff-label">Hard</span>
+                <span class="diff-desc">5 x 4 Grid</span>
+            </button>
+        </div>
+
+        <button class="start-btn" id="startBtn">Start Game</button>
+
+        <div class="best-badge" id="bestBadge" style="display:none;">
+            <span class="trophy-spin"><i class="fas fa-trophy"></i></span>
+            <span id="bestText"></span>
+        </div>
+
+        <div class="how-box">
+            <h3><i class="fas fa-lightbulb" style="color:var(--yellow);"></i> How to Play</h3>
+            <ol>
+                <li>Click any card to flip it over</li>
+                <li>Find two cards with the same picture</li>
+                <li>Match all pairs to win the game</li>
+                <li>Fewer moves and faster time means a higher score</li>
+            </ol>
+        </div>
+    </section>
+</body>
+</html>
