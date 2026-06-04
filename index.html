@@ -66,5 +66,40 @@
             </ol>
         </div>
     </section>
+    
+    <!-- ===== GAME SECTION ===== -->
+    <section class="game-section" id="gameSection" aria-label="Game board">
+        <header>
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-item">
+                    <div class="stat-icon moves"><i class="fas fa-hand-pointer"></i></div>
+                    <span>Moves</span>
+                    <span class="stat-value" id="movesVal">0</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon matches"><i class="fas fa-check-double"></i></div>
+                    <span>Matches</span>
+                    <span class="stat-value" id="matchesVal">0</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon timer"><i class="fas fa-clock"></i></div>
+                    <span>Time</span>
+                    <span class="stat-value" id="timerVal">0:00</span>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon score"><i class="fas fa-star"></i></div>
+                    <span>Score</span>
+                    <span class="stat-value" id="scoreVal">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-grid cols-4" id="gameGrid" role="grid" aria-label="Memory cards"></div>
+
+        <nav class="game-controls">
+            <button class="ctrl-btn primary" id="restartBtn"><i class="fas fa-redo"></i> Restart</button>
+            <button class="ctrl-btn secondary" id="menuBtn"><i class="fas fa-home"></i> Menu</button>
+        </nav>
+    </section>
 </body>
 </html>
