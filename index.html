@@ -101,5 +101,36 @@
             <button class="ctrl-btn secondary" id="menuBtn"><i class="fas fa-home"></i> Menu</button>
         </nav>
     </section>
+    
+    <!-- ===== VICTORY MODAL ===== -->
+    <div class="victory-overlay" id="victoryOverlay" role="dialog" aria-label="Victory screen">
+        <div class="victory-modal">
+            <h2 class="v-title" id="vTitle">Congratulations</h2>
+            <p class="v-subtitle" id="vSubtitle">You matched all the pairs</p>
+            <div class="v-stars" id="vStars" aria-hidden="true"></div>
+            <div class="v-stats">
+                <div class="v-stat">
+                    <div class="v-stat-label">Moves</div>
+                    <div class="v-stat-value" id="vMoves">0</div>
+                </div>
+                <div class="v-stat">
+                    <div class="v-stat-label">Time</div>
+                    <div class="v-stat-value" id="vTime">0:00</div>
+                </div>
+                <div class="v-stat">
+                    <div class="v-stat-label">Score</div>
+                    <div class="v-stat-value" id="vScore" style="color:var(--pink);">0</div>
+                </div>
+                <div class="v-stat">
+                    <div class="v-stat-label">Best</div>
+                    <div class="v-stat-value" id="vBest" style="color:var(--gold);">0</div>
+                </div>
+            </div>
+            <div class="v-btns">
+                <button class="ctrl-btn primary" id="playAgainBtn"><i class="fas fa-redo"></i> Play Again</button>
+                <button class="ctrl-btn secondary" id="victoryMenuBtn"><i class="fas fa-home"></i> Menu</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
