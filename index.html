@@ -302,6 +302,46 @@ function createBgShapes() {
     }
 }
 createBgShapes();
+/* ==============================
+   DIFFICULTY SELECTION
+   ============================== */
+diffCards.forEach(card => {
+    card.addEventListener('click', () => {
+        diffCards.forEach(c => {
+            c.classList.remove('selected');
+            c.setAttribute('aria-checked', 'false');
+        });
+        card.classList.add('selected');
+        card.setAttribute('aria-checked', 'true');
+        state.difficulty = card.dataset.diff;
+        showBestScore();
+        initAudio();
+        playSound('flip');
+    });
+});
+
+function showBestScore() {
+    const best = getBestScore(state.difficulty);
+    if (best) {
+        bestBadge.style.display = 'flex';
+        bestText.textContent = `Best Score: ${best}`;
+    } else {
+        bestBadge.style.display = 'none';
+    }
+}
+showBestScore();
+
+/* ==============================
+   SOUND TOGGLE
+   ============================== */
+soundToggle.addEventListener('click', () => {
+    initAudio();
+    soundEnabled = !soundEnabled;
+    soundToggle.innerHTML = soundEnabled
+        ? '<i class="fas fa-volume-high"></i>'
+        : '<i class="fas fa-volume-xmark"></i>';
+});
+
 </script>
 </body>
 </html>
