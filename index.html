@@ -257,6 +257,51 @@ function playSound(type) {
         }
     }
 }
+/* ==============================
+   DOM REFERENCES
+   ============================== */
+const heroSection = document.getElementById('heroSection');
+const gameSection = document.getElementById('gameSection');
+const gameGrid = document.getElementById('gameGrid');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const menuBtn = document.getElementById('menuBtn');
+const soundToggle = document.getElementById('soundToggle');
+const toastEl = document.getElementById('toast');
+const victoryOverlay = document.getElementById('victoryOverlay');
+const playAgainBtn = document.getElementById('playAgainBtn');
+const victoryMenuBtn = document.getElementById('victoryMenuBtn');
+const bestBadge = document.getElementById('bestBadge');
+const bestText = document.getElementById('bestText');
+const diffCards = document.querySelectorAll('.diff-card');
+
+// Stat displays
+const movesVal = document.getElementById('movesVal');
+const matchesVal = document.getElementById('matchesVal');
+const timerVal = document.getElementById('timerVal');
+const scoreVal = document.getElementById('scoreVal');
+
+/* ==============================
+   BACKGROUND SHAPES
+   ============================== */
+function createBgShapes() {
+    const container = document.getElementById('bgShapes');
+    const colors = ['#4FC3F7', '#FFD54F', '#FF6B9D', '#66BB6A', '#FF9800'];
+    for (let i = 0; i < 12; i++) {
+        const s = document.createElement('div');
+        s.classList.add('floating-shape');
+        const size = 60 + Math.random() * 100;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.background = colors[i % colors.length];
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top = Math.random() * 100 + '%';
+        s.style.setProperty('--dur', (12 + Math.random() * 10) + 's');
+        s.style.animationDelay = -(Math.random() * 15) + 's';
+        container.appendChild(s);
+    }
+}
+createBgShapes();
 </script>
 </body>
 </html>
