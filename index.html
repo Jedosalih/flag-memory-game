@@ -8,6 +8,44 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+<style>
+        :root {
+            --sky: #4FC3F7;
+            --yellow: #FFD54F;
+            --pink: #FF6B9D;
+            --green: #66BB6A;
+            --orange: #FF9800;
+            --neon-blue: #00E5FF;
+            --gold: #FFD700;
+            --bg: #FFF8E1;
+            --card-back: linear-gradient(135deg, #4FC3F7, #0288D1);
+            --text: #2D3436;
+            --text-light: #636E72;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Baloo 2', cursive, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Floating background shapes */
+        .bg-shapes {
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .floating-shape {
+            position: absolute; border-radius: 50%; opacity: 0.12;
+            animation: floatShape var(--dur, 15s) ease-in-out infinite;
+        }
+        @keyframes floatShape {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            33% { transform: translateY(-35px) rotate(120deg) scale(1.08); }
+            66% { transform: translateY(-18px) rotate(240deg) scale(0.94); }
+        }
+    </style>
 <body>
 
     <!-- Floating background -->
