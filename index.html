@@ -408,6 +408,247 @@ soundToggle.addEventListener('click', () => {
         : '<i class="fas fa-volume-xmark"></i>';
 });
 
+/* ==============================
+   GAME LOGIC
+   ============================== */
+
+// Fisher-Yates shuffle
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function startGame() {
+    initAudio();
+    const diff = DIFFICULTIES[state.difficulty];
+    state.totalPairs = diff.pairs;
+    state.matchedPairs = 0;
+    state.moves = 0;
+    state.score = 0;
+    state.combo = 0;
+    state.flippedIndices = [];
+    state.isLocked = false;
+    state.gameStarted = false;
+    state.timerSeconds = 0;
+    clearInterval(state.timerInterval);
+
+    // Pick random emojis and create pairs
+    const chosenEmojis = shuffle(EMOJIS).slice(0, diff.pairs);
+    const cardEmojis = shuffle([...chosenEmojis, ...chosenEmojis]);
+    state.cards = cardEmojis;
+
+    // Switch views
+    heroSection.classList.add('hidden');
+    gameSection.classList.add('active');
+    victoryOverlay.classList.remove('active');
+
+    // Set grid columns
+    gameGrid.className = 'game-grid';
+    if (diff.cols === 5) {
+        gameGrid.classList.add('cols-5');
+    } else {
+        gameGrid.classList.add('cols-4');
+    }
+
+    // Render cards
+    renderCards();
+    updateStats();
+}
+
+function renderCards() {
+    gameGrid.innerHTML = '';
+    state.cards.forEach((emoji, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card entering';
+        card.dataset.index = idx;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Card ${idx + 1}, face down`);
+        card.setAttribute('tabindex', '0');
+        card.style.animationDelay = (idx * 45) + 'ms';
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-face card-back">
+                    <div class="card-back-dots"></div>
+                    <span class="card-back-q">?</span>
+                </div>
+                <div class="card-face card-front">
+                    <span class="card-emoji">${emoji}</span>
+                </div>
+            </div>
+        `;
+
+        card.addEventListener('click', () => handleCardClick(idx));
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCardClick(idx);
+            }
+        });
+
+        gameGrid.appendChild(card);
+    });
+}
+
+function handleCardClick(index) {
+    if (state.isLocked) return;
+    // Can't flip already matched or already flipped card
+    if (state.flippedIndices.includes(index)) return;
+    const cardEl = gameGrid.children[index];
+    if (!cardEl || cardEl.classList.contains('matched')) return;
+
+    // Start timer on first flip
+    if (!state.gameStarted) {
+        state.gameStarted = true;
+        startTimer();
+    }
+
+    // Flip the card
+    cardEl.classList.add('flipped');
+    cardEl.setAttribute('aria-label', `Card ${index + 1}, showing ${state.cards[index]}`);
+    state.flippedIndices.push(index);
+    playSound('flip');
+
+    // Check for pair
+    if (state.flippedIndices.length === 2) {
+        state.moves++;
+        state.isLocked = true;
+        checkMatch();
+    }
+}
+
+function checkMatch() {
+    const [i1, i2] = state.flippedIndices;
+    const card1 = gameGrid.children[i1];
+    const card2 = gameGrid.children[i2];
+
+    if (state.cards[i1] === state.cards[i2]) {
+        // Match found!
+        state.combo++;
+        const bonus = state.combo >= 2 ? state.combo * 50 : 0;
+        const matchScore = 100 + bonus;
+        state.score += matchScore;
+        state.matchedPairs++;
+
+        setTimeout(() => {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            playSound('match');
+
+            // Particle effects from both cards
+            spawnMatchParticles(card1);
+            spawnMatchParticles(card2);
+
+            if (state.combo >= 2) {
+                playSound('combo');
+                showToast(`${state.combo}x Combo! +${matchScore}`, 'var(--gold)');
+            }
+
+            state.flippedIndices = [];
+            state.isLocked = false;
+            updateStats();
+
+            // Check win
+            if (state.matchedPairs === state.totalPairs) {
+                setTimeout(handleWin, 600);
+            }
+        }, 350);
+    } else {
+        // No match
+        state.combo = 0;
+        playSound('mismatch');
+        setTimeout(() => {
+            card1.classList.add('shake');
+            card2.classList.add('shake');
+            setTimeout(() => {
+                card1.classList.remove('flipped', 'shake');
+                card2.classList.remove('flipped', 'shake');
+                card1.setAttribute('aria-label', `Card ${i1 + 1}, face down`);
+                card2.setAttribute('aria-label', `Card ${i2 + 1}, face down`);
+                state.flippedIndices = [];
+                state.isLocked = false;
+            }, 450);
+        }, 600);
+        updateStats();
+    }
+}
+
+function handleWin() {
+    clearInterval(state.timerInterval);
+    playSound('win');
+
+    // Calculate final score with time bonus
+    const timeBonus = Math.max(0, 300 - state.timerSeconds * 2);
+    const efficiencyBonus = Math.max(0, (state.totalPairs * 3 - state.moves) * 25);
+    state.score += timeBonus + efficiencyBonus;
+
+    // Save best score
+    const isNewBest = saveBestScore(state.difficulty, state.score);
+    const best = getBestScore(state.difficulty);
+
+    // Determine star rating (out of 3)
+    const minMoves = state.totalPairs;
+    const moveRatio = state.moves / minMoves;
+    let stars = 1;
+    if (moveRatio <= 1.5) stars = 3;
+    else if (moveRatio <= 2.2) stars = 2;
+
+    // Populate victory modal
+    document.getElementById('vTitle').textContent = isNewBest ? 'New Record' : 'Congratulations';
+    document.getElementById('vSubtitle').textContent = isNewBest
+        ? 'You set a new personal best!'
+        : 'You matched all the pairs!';
+    document.getElementById('vStars').innerHTML = renderStars(stars);
+    document.getElementById('vMoves').textContent = state.moves;
+    document.getElementById('vTime').textContent = formatTime(state.timerSeconds);
+    document.getElementById('vScore').textContent = state.score;
+    document.getElementById('vBest').textContent = best;
+
+    // Show modal & confetti
+    victoryOverlay.classList.add('active');
+    spawnConfetti();
+    updateStats();
+}
+
+function renderStars(count) {
+    let html = '';
+    for (let i = 0; i < 3; i++) {
+        html += `<span style="opacity:${i < count ? 1 : 0.2}; filter:${i < count ? 'drop-shadow(0 0 6px rgba(255,215,0,0.6))' : 'none'};">&#11088;</span>`;
+    }
+    return html;
+}
+
+/* ==============================
+   TIMER
+   ============================== */
+function startTimer() {
+    clearInterval(state.timerInterval);
+    state.timerSeconds = 0;
+    state.timerInterval = setInterval(() => {
+        state.timerSeconds++;
+        timerVal.textContent = formatTime(state.timerSeconds);
+    }, 1000);
+}
+
+function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+/* ==============================
+   UPDATE STATS
+   ============================== */
+function updateStats() {
+    movesVal.textContent = state.moves;
+    matchesVal.textContent = state.matchedPairs + '/' + state.totalPairs;
+    scoreVal.textContent = state.score;
+}
+
 </script>
 </body>
 </html>
