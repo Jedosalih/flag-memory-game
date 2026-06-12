@@ -747,7 +747,39 @@ function showToast(msg, color) {
     }, 1800);
 }
 
+/* ==============================
+   EVENT LISTENERS
+   ============================== */
+startBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', startGame);
+menuBtn.addEventListener('click', goToMenu);
+playAgainBtn.addEventListener('click', () => {
+    victoryOverlay.classList.remove('active');
+    startGame();
+});
+victoryMenuBtn.addEventListener('click', () => {
+    victoryOverlay.classList.remove('active');
+    goToMenu();
+});
 
+function goToMenu() {
+    clearInterval(state.timerInterval);
+    gameSection.classList.remove('active');
+    heroSection.classList.remove('hidden');
+    showBestScore();
+}
+
+// Keyboard: Escape to go back
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (victoryOverlay.classList.contains('active')) {
+            victoryOverlay.classList.remove('active');
+            goToMenu();
+        } else if (gameSection.classList.contains('active')) {
+            goToMenu();
+        }
+    }
+});
 </script>
 </body>
 </html>
