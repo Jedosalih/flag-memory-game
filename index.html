@@ -648,6 +648,27 @@ function updateStats() {
     matchesVal.textContent = state.matchedPairs + '/' + state.totalPairs;
     scoreVal.textContent = state.score;
 }
+/* ==============================
+   LOCAL STORAGE
+   ============================== */
+function saveBestScore(diff, score) {
+    try {
+        const key = 'memoryMatch_best_' + diff;
+        const current = localStorage.getItem(key);
+        if (!current || score > parseInt(current, 10)) {
+            localStorage.setItem(key, score.toString());
+            return true;
+        }
+    } catch (e) { /* storage not available */ }
+    return false;
+}
+
+function getBestScore(diff) {
+    try {
+        const val = localStorage.getItem('memoryMatch_best_' + diff);
+        return val ? parseInt(val, 10) : null;
+    } catch (e) { return null; }
+}
 
 </script>
 </body>
