@@ -669,6 +669,84 @@ function getBestScore(diff) {
         return val ? parseInt(val, 10) : null;
     } catch (e) { return null; }
 }
+/* ==============================
+   EFFECTS
+   ============================== */
+
+// Match particles burst from a card element
+function spawnMatchParticles(cardEl) {
+    const rect = cardEl.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const colors = ['#FFD54F', '#FF6B9D', '#66BB6A', '#4FC3F7', '#FF9800', '#E040FB'];
+
+    for (let i = 0; i < 10; i++) {
+        const p = document.createElement('div');
+        p.className = 'match-particle';
+        const size = 6 + Math.random() * 8;
+        const angle = (Math.PI * 2 / 10) * i + Math.random() * 0.3;
+        const dist = 40 + Math.random() * 60;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
+
+    // Star bursts
+    for (let i = 0; i < 4; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-burst';
+        const angle = (Math.PI * 2 / 4) * i + Math.random() * 0.5;
+        const dist = 30 + Math.random() * 40;
+        s.style.left = cx + 'px';
+        s.style.top = cy + 'px';
+        s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        s.textContent = '✦';
+        s.style.color = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 700);
+    }
+}
+
+// Confetti rain
+function spawnConfetti() {
+    const colors = ['#FFD54F', '#FF6B9D', '#66BB6A', '#4FC3F7', '#FF9800', '#E040FB', '#FFD700'];
+    for (let i = 0; i < 60; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+        const w = 6 + Math.random() * 8;
+        const h = 10 + Math.random() * 14;
+        c.style.width = w + 'px';
+        c.style.height = h + 'px';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        const dur = 2 + Math.random() * 2.5;
+        c.style.animationDuration = dur + 's';
+        c.style.animationDelay = Math.random() * 1.5 + 's';
+        c.style.setProperty('--rot', (360 + Math.random() * 720) + 'deg');
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), (dur + 2) * 1000);
+    }
+}
+
+// Toast notification
+let toastTimeout = null;
+function showToast(msg, color) {
+    clearTimeout(toastTimeout);
+    toastEl.textContent = msg;
+    toastEl.style.color = color || 'var(--text)';
+    toastEl.classList.add('show');
+    toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+    }, 1800);
+}
+
 
 </script>
 </body>
